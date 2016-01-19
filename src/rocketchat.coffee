@@ -3,7 +3,6 @@ try
 catch
 	  prequire = require('parent-require')
 	  {Robot,Adapter,TextMessage, EnterMessage, User} = prequire 'hubot'
-Q = require 'q'
 Chatdriver = require './rocketchat_driver'
 
 RocketChatURL = process.env.ROCKETCHAT_URL or "localhost:3000"
@@ -21,6 +20,7 @@ class RocketChatBotAdapter extends Adapter
 		return @robot.logger.error "No services ROCKETCHAT_PASSWORD provided to Hubot" unless RocketChatPassword
 		@robot.logger.info "Connecting To: #{RocketChatURL}"
 
+
 	run: =>
 		@.init()
 		lastts = new Date()
@@ -30,8 +30,11 @@ class RocketChatBotAdapter extends Adapter
 			# @robot.logger.info JSON.stringify(rooms)
 			driver = @chatdriver
 			robot = @robot
+
 			driver.login(RocketChatUser, RocketChatPassword).then (userid) =>
 				robot.logger.info "Successfully Logged In as " + userid
+
+				driver.subscribeToRooms()
 
 				room_ids = []
 				driver.getUserRooms(userid).then (rooms) ->
@@ -39,6 +42,15 @@ class RocketChatBotAdapter extends Adapter
 						room_ids.push(room._id)
 						driver.joinRoom(userid, RocketChatUser, room._id).then (result) ->
 							driver.prepMeteorSubscriptions({uid: userid, roomid: room._id})
+
+					driver.setupReactiveRoomList (id, result) =>
+						result = result.result
+						if result.length
+							room_ids.push(result[0].rid) if room_ids.indexOf(result[0].rid) is -1
+							driver.prepMeteorSubscriptions({uid: userid, roomid: result[0].rid})
+						else
+							# don't have access to the rid, so ..
+							# refresh (for now) -- refactor everything based on subscriptions
 
 					driver.setupReactiveMessageList (newmsg) =>
 						if (newmsg.u._id isnt userid)  || (newmsg.t is 'uj')

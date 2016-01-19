@@ -1,6 +1,6 @@
 {
   "name": "hubot-creators",
-  "version":  "0.0.1",
+  "version":  "0.0.2",
   "author": {
     "name": "Creators",
     "url": "http://creators.co/"
@@ -33,7 +33,6 @@
   "main": "./src/rocketchat",
   "dependencies": {
     "asteroid": "^0.6.1",
-    "parent-require": "^1.0.0",
-    "q": "^1.4.1"
+    "parent-require": "^1.0.0"
   }
 }
