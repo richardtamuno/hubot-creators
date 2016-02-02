@@ -34,7 +34,7 @@ class RocketChatBotAdapter extends Adapter
 			driver.login(RocketChatUser, RocketChatPassword).then (userid) =>
 				robot.logger.info "Successfully Logged In as " + userid
 
-				driver.subscribeToRooms()
+				# driver.subscribeToRooms()
 
 				room_ids = []
 				driver.getUserRooms(userid).then (rooms) ->
@@ -43,12 +43,12 @@ class RocketChatBotAdapter extends Adapter
 						driver.joinRoom(userid, RocketChatUser, room._id).then (result) ->
 							driver.prepMeteorSubscriptions({uid: userid, roomid: room._id})
 
-					driver.setupReactiveRoomList (id, result) =>
-						result = result.result
-						if result.length
-							room_ids.push(result[0].rid) if room_ids.indexOf(result[0].rid) is -1
-							driver.prepMeteorSubscriptions({uid: userid, roomid: result[0].rid})
-						else
+					#driver.setupReactiveRoomList (id, result) =>
+						#result = result.result
+						#if result.length
+							#room_ids.push(result[0].rid) if room_ids.indexOf(result[0].rid) is -1
+							#driver.prepMeteorSubscriptions({uid: userid, roomid: result[0].rid})
+						#else
 							# don't have access to the rid, so ..
 							# refresh (for now) -- refactor everything based on subscriptions
 
