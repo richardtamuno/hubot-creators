@@ -143,7 +143,6 @@ class RocketChatBotAdapter extends Adapter
 					@robot.logger.info "Successfully joined room: #{rooms[idx]}"
 					subscribed.push rooms[idx]
 					subs.push @chatdriver.prepMeteorSubscriptions({uid: userid, roomid: rooms[idx]})
-
 				return Q.all(subs)
 				.catch((subErr) =>
 					@robot.logger.error "Unable to subscribe: #{JSON.stringify(subErr)} Reason: #{subErr.reason}"
